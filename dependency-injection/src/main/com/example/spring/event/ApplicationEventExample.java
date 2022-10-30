@@ -2,13 +2,11 @@ package com.example.spring.event;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import static java.util.concurrent.Executors.newSingleThreadExecutor;
-
 /**
 * @author liuwenxue
 * @date 2022-10-30
 */
-public class Main {
+public class ApplicationEventExample {
     public static void main(String[] args) throws InterruptedException {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
         context.register(EventConfiguration.class);

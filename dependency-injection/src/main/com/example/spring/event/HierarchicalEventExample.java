@@ -1,10 +1,6 @@
 package com.example.spring.event;
 
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.event.ApplicationContextEvent;
-import org.springframework.context.event.EventListener;
 
 /**
  * @author liuwenxue
