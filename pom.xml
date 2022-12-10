@@ -18,10 +18,12 @@
     <modules>
         <module>dependency-injection</module>
         <module>spring-tx</module>
+        <module>spring-cache-example</module>
     </modules>
 
     <properties>
         <spring.version>5.2.2.RELEASE</spring.version>
+        <springboot.version>2.3.2.RELEASE</springboot.version>
         <logback.version>1.2.1</logback.version>
     </properties>
 
@@ -126,7 +128,13 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
-            <version>2.5.12</version>
+            <version>${springboot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.24</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
