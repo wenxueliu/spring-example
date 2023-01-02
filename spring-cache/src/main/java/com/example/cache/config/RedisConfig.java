@@ -16,6 +16,7 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.io.Serializable;
+import java.time.Duration;
 
 /**
  * @author liuwenxue
@@ -45,8 +46,33 @@ public class RedisConfig {
     public CacheManager cacheManager(RedisConnectionFactory factory) {
         // 配置序列化
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig();
-        RedisCacheConfiguration redisCacheConfiguration = config.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer())).serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+        RedisCacheConfiguration redisCacheConfiguration = config
+                // 禁止缓存 null 值
+                .disableCachingNullValues()
+                .serializeKeysWith(keyPair())
+                .serializeValuesWith(valuePair())
+                .entryTtl(Duration.ofMinutes(10L));
+        ;
 
         return RedisCacheManager.builder(factory).cacheDefaults(redisCacheConfiguration).build();
+    }
+
+
+    /**
+     * 配置值序列化，使用 GenericJackson2JsonRedisSerializer 替换默认序列化
+     *
+     * @return GenericJackson2JsonRedisSerializer
+     */
+    private RedisSerializationContext.SerializationPair<Object> valuePair() {
+        return RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer());
+    }
+
+    /**
+     * 配置键序列化
+     *
+     * @return StringRedisSerializer
+     */
+    private RedisSerializationContext.SerializationPair<String> keyPair() {
+        return RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer());
     }
 }
