@@ -1,6 +1,10 @@
 server:
   port: 8080
   servlet.context-path: /session-example
+  servlet:
+    session:
+      cookie:
+        name: MYSESSION
 
 logging:
   level:
@@ -24,3 +28,4 @@ spring:
         max-idle: 10
         min-idle: 10
     database: 0
+  servlet:
