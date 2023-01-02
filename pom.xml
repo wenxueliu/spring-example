@@ -20,10 +20,12 @@
         <module>spring-tx</module>
         <module>spring-session</module>
         <module>spring-cache</module>
+        <module>spring-cache-example</module>
     </modules>
 
     <properties>
         <spring.version>5.2.2.RELEASE</spring.version>
+        <springboot.version>2.3.2.RELEASE</springboot.version>
         <logback.version>1.2.1</logback.version>
         <springboot.version>2.6.7</springboot.version>
     </properties>
@@ -122,7 +124,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
-            <version>2.5.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
