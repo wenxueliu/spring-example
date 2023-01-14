@@ -9,12 +9,20 @@ import com.example.cache.entity.User;
  */
 public interface UserService {
     /**
-     * 保存或修改用户
+     * 保存用户
      *
      * @param user 用户对象
      * @return 操作结果
      */
-    User saveOrUpdate(User user);
+    User save(User user);
+
+    /**
+     * 修改用户
+     *
+     * @param user 用户对象
+     * @return 操作结果
+     */
+    User update(User user);
 
     /**
      * 获取用户

@@ -24,8 +24,18 @@ public class UserController {
      * @return 操作结果
      */
     @PostMapping("save")
-    public User saveOrUpdate(@RequestBody User user) {
-        return userService.saveOrUpdate(user);
+    public User save(@RequestBody User user) {
+        return userService.save(user);
+    }
+
+    /**
+     * 删除
+     *
+     * @param user key值
+     */
+    @PutMapping("put")
+    void update(@RequestBody User user) {
+        userService.update(user);
     }
 
     /**

@@ -6,6 +6,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -25,8 +26,7 @@ import java.time.Duration;
 @Configuration
 @AutoConfigureAfter(RedisAutoConfiguration.class)
 @EnableCaching
-public class RedisConfig {
-
+public class RedisCacheConfig {
     /**
      * 默认情况下的模板只能支持RedisTemplate<String, String>，也就是只能存入字符串，因此支持序列化
      */
@@ -40,20 +40,30 @@ public class RedisConfig {
     }
 
     /**
-     * 配置使用注解的时候缓存配置，默认是序列化反序列化的形式，加上此配置则为 json 形式
+     * 针对不同的场景配置不同的 CacheManager
      */
-    @Bean
-    public CacheManager cacheManager(RedisConnectionFactory factory) {
-        // 配置序列化
+    @Bean(name = "userService")
+    public CacheManager cacheManagerForUserService(RedisConnectionFactory factory) {
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig();
         RedisCacheConfiguration redisCacheConfiguration = config
-                // 禁止缓存 null 值
                 .disableCachingNullValues()
                 .serializeKeysWith(keyPair())
                 .serializeValuesWith(valuePair())
-                .entryTtl(Duration.ofMinutes(10L));
-        ;
+                .entryTtl(Duration.ofMinutes(5L))
+                .prefixCacheNameWith("service:");
+        return RedisCacheManager.builder(factory).cacheDefaults(redisCacheConfiguration).build();
+    }
 
+    @Bean(name = "default")
+    @Primary
+    public CacheManager defaultCacheManager(RedisConnectionFactory factory) {
+        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig();
+        RedisCacheConfiguration redisCacheConfiguration = config
+                .disableCachingNullValues()
+                .serializeKeysWith(keyPair())
+                .serializeValuesWith(valuePair())
+                .entryTtl(Duration.ofMinutes(10L))
+                .prefixCacheNameWith("default:");
         return RedisCacheManager.builder(factory).cacheDefaults(redisCacheConfiguration).build();
     }
 

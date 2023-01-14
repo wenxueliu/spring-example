@@ -17,4 +17,10 @@ spring:
         max-idle: 10
         min-idle: 10
     database: 0
-  servlet:
+  cache:
+    type: redis
+    redis:
+      cache-null-values: false
+      key-prefix: spring-cache
+      time-to-live: 600
+      use-key-prefix: true

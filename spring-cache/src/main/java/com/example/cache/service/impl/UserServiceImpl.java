@@ -4,9 +4,7 @@ package com.example.cache.service.impl;
 import com.example.cache.entity.User;
 import com.example.cache.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.*;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -18,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Service
 @Slf4j
+@CacheConfig(cacheNames = "user", cacheManager = "userService")
 public class UserServiceImpl implements UserService {
     /**
      * 模拟数据库
@@ -34,14 +33,29 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * 保存或修改用户
+     * 保存用户
      *
      * @param user 用户对象
      * @return 操作结果
      */
-    @CachePut(value = "user", key = "#user.id")
+    @CachePut(key = "#user.id")
     @Override
-    public User saveOrUpdate(User user) {
+    public User save(User user) {
+        DATABASES.put(user.getId(), user);
+        log.info("保存用户【user】= {}", user);
+        return user;
+    }
+
+    /**
+     * 修改用户
+     *
+     * @param user 用户对象
+     * @return 操作结果
+     */
+    @Caching(evict = @CacheEvict(key = "#user.id"),
+            put = @CachePut(key = "#user.id"))
+    @Override
+    public User update(User user) {
         DATABASES.put(user.getId(), user);
         log.info("保存用户【user】= {}", user);
         return user;
@@ -53,7 +67,7 @@ public class UserServiceImpl implements UserService {
      * @param id key值
      * @return 返回结果
      */
-    @Cacheable(value = "user", key = "#id")
+    @Cacheable(key = "#id", condition = "#id > 1")
     @Override
     public User get(long id) {
         // 我们假设从数据库读取
@@ -66,9 +80,20 @@ public class UserServiceImpl implements UserService {
      *
      * @param id key值
      */
-    @CacheEvict(value = "user", key = "#id")
+    @CacheEvict(key = "#id")
     @Override
     public void delete(long id) {
+        DATABASES.remove(id);
+        log.info("删除用户【id】= {}", id);
+    }
+
+    /**
+     * 删除
+     *
+     * @param id key值
+     */
+    @Caching()
+    public void deleteAll(long id) {
         DATABASES.remove(id);
         log.info("删除用户【id】= {}", id);
     }
